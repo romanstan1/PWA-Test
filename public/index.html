@@ -47,7 +47,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
     <script>
-      // Initialize Firebase
+
       var config = {
         apiKey: "AIzaSyABXn3oaiFd4g8CJwEYp8_eaoKBd3DAaUA",
         authDomain: "homescreentest8.firebaseapp.com",
@@ -57,6 +57,35 @@
         messagingSenderId: "550739938923"
       };
       firebase.initializeApp(config);
+
+      const messaging = firebase.messaging();
+
+      messaging.usePublicVapidKey("BDCw5eaLxF2lZ---M_P5rz_xpGrf9s5_Abb7aLv4FK_e2B2Cp9UzcKB33FPTj25UH7kmJB0oXSVF4aN8Ze8cT4I");
+      messaging.requestPermission()
+        .then(function() {
+         console.log("Persission granted for messaging")
+         return messaging.getToken()
+        })
+        .then(function(token) {
+         console.log("Token: ",token)
+         fetch(`https://serene-ocean-70888.herokuapp.com/registertopic`,
+         // fetch(`http://localhost:3000/registertopic`,
+         {
+           method: "POST",
+           mode: 'cors',
+           headers: {
+             'Content-Type': 'application/x-www-form-urlencoded'
+           },
+           body:"token=" + token + "&topic=all2"
+         })
+         .then(function(resp) { console.log("resp from token registration:  ",resp) })
+         .catch(function(error) { console.log("error with token registration:  ",error) })
+        })
+
+      messaging.onMessage(function(payload){
+       console.log("onMessage: ",payload)
+     })
+
     </script>
   </body>
 </html>
